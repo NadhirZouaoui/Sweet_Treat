@@ -1,10 +1,25 @@
+interface ButtonProps {
+  value: string;
+  url: string;
+}
+
+function Button({ value, url }: ButtonProps) {
+  return (
+    <a
+      href={url}
+      className="bg-pink-600 rounded-full w-45 h-14 text-white flex items-center justify-center font-semibold text-lg
+      hover:bg-pink-800 hover:-translate-y-1 transition-all duration-300 ease-in-out"
+    >
+      {value}
+    </a>
+  );
+}
 function Home() {
   return (
     <div
       className="m-0 
       min-h-screen
       bg-[linear-gradient(90deg,rgba(255,255,255,0.9)_20%,rgba(255,255,255,0.6)_60%,rgba(255,171,224,0)_100%),url('/src/assets/homeBg.png')] 
-      bg-fixed 
       bg-center 
       bg-cover"
     >
@@ -12,7 +27,7 @@ function Home() {
         className="flex
           flex-col
           justify-around
-          min-h-screen
+          min-h-[90vh]
           ml-44
           w-xl"
       >
@@ -49,7 +64,10 @@ function Home() {
           cookies. Order now and get the taste of a real home-made desert, a
           taste that you will never forget!
         </div>
-        <div></div>
+        <div className="flex justify-around w-3/4">
+          <Button value="best sellers" url="" />
+          <Button value="our story" url="" />
+        </div>
       </div>
     </div>
   );
