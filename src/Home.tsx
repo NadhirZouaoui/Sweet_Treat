@@ -8,7 +8,12 @@ function Button({ value, url }: ButtonProps) {
     <a
       href={url}
       className="bg-pink-600 rounded-full w-45 h-14 text-white flex items-center justify-center font-semibold text-lg
-      hover:bg-pink-800 hover:-translate-y-1 transition-all duration-300 ease-in-out"
+      hover:bg-pink-800 hover:-translate-y-1 transition-all duration-300 ease-in-out "
+      style={{
+        animation: "fadeInUp 0.8s ease-out forwards",
+        animationDelay: "600ms",
+        opacity: 0,
+      }}
     >
       {value}
     </a>
