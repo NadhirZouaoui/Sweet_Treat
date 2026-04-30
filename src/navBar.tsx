@@ -3,6 +3,7 @@ function navBar() {
   return (
     <div
       className="mt-5 
+      z-10
       rounded-4xl 
       w-1/3 justify-self-center
       basis-8 
