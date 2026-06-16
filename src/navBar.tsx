@@ -1,32 +1,45 @@
 import "./assets/fonts/Comfortaa-Regular.ttf";
-function navBar() {
+import ThreeDButton from "./ThreeDButton";
+interface visibilityProps {
+  toggleCart: () => void;
+}
+
+function navBar({ toggleCart }: visibilityProps) {
   return (
     <div
-      className="mt-5 
-      z-10
-      rounded-4xl 
-      w-1/3 justify-self-center
-      basis-8 
-      shadow-[0px_0px_30px_rgba(227,228,237,0.37)] 
-      border-2 border-solid border-[rgba(255,255,255,0.4)] 
-      bg-white/30 
-      backdrop-blur-[30px]
-      fixed"
+      className="flex fixed z-2 w-full border-b border-[rgba(255,255,255,0.3)]
+      bg-primary 
+      justify-between
+      h-20"
     >
-      <ul className="flex justify-around p-6 font-comfortaa text-lg">
-        <li>
-          <a href="">menu</a>
-        </li>
-        <li>
-          <a href="">about</a>
-        </li>
-        <li>
-          <a href="">reviews</a>
-        </li>
-        <li>
-          <a href="">contact</a>
-        </li>
-      </ul>
+      <button className="w-35">logo</button>
+      <div className=" w-1/3">
+        <ul className="flex justify-around p-6 gap-x-3 font-comfortaa text-lg">
+          <li>
+            <a href="">Home</a>
+          </li>
+          <li>
+            <a href="">Menu</a>
+          </li>
+          <li>
+            <a href="">reviews</a>
+          </li>
+          <li>
+            <a href="">contact</a>
+          </li>
+        </ul>
+      </div>
+      <div className="m-4">
+        <ThreeDButton
+          color="bg-secondary"
+          width="w-35"
+          height="h-12"
+          text="Cart"
+          extraFeatures="text-white font-bold"
+          cartIconExist
+          onClick={toggleCart}
+        />
+      </div>
     </div>
   );
 }

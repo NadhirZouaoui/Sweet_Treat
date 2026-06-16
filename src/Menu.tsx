@@ -11,11 +11,18 @@ import item6 from "./assets/cookie_items/item6.png";
 import item8 from "./assets/cookie_items/item8.png";
 import item9 from "./assets/cookie_items/item9.png";
 import { useState } from "react";
-import { ShoppingCart, X } from "lucide-react";
+import { X } from "lucide-react";
+import ThreeDButton from "./ThreeDButton";
+
 enum Category {
   Cookies,
   Brownies,
   Tiramisu,
+}
+interface Visibility {
+  areItemsVisible: boolean;
+  isCartVisible: boolean;
+  toggle: () => void;
 }
 interface catProps {
   category: Category;
@@ -26,74 +33,49 @@ interface catProps {
   buttonBgColor: string;
   label: string;
 }
-interface productCardProps {
+interface itemProps {
   imgUrl: string;
-  buttonBgColor: string;
   description: string;
   price: string;
+  qte: number;
 }
-interface itemsProps {
+
+interface productCardProps {
+  item: itemProps;
+  buttonBgColor: string;
+}
+
+interface itemsGroupProps {
   currentCategory: Category;
   buttonBgColor: string;
   onClose: () => void;
 }
-
-interface buttonProps {
-  color: string;
-  width: string;
-  height: string;
-  text: string;
-  extraFeatures: string;
-  cartIconExist: boolean;
-  onClick: () => void;
-}
-
-const ThreeDButton = (props: buttonProps) => {
-  const heightNumber: number = parseInt(props.height.replace(/[^\d.]/g, ""));
-  const shadowHeight: number = heightNumber * 0.5;
-  return (
-    <button
-      onClick={props.onClick}
-      className={` rounded-full ${props.color}  ${props.width} ${props.height} flex items-center justify-center border-none
-                hover:border-2 hover:border-black hover:shadow-none! hover:translate-y-2 ease-in transition-all cursor-pointer
-                ${props.extraFeatures}`}
-      style={{
-        boxShadow: `0px ${shadowHeight}px 0 0 black`,
-      }}
-    >
-      {props.cartIconExist && (
-        <ShoppingCart size={25} color="white" className="mr-2" />
-      )}
-      {props.text}
-    </button>
-  );
-};
 
 function ProductCard(props: productCardProps) {
   return (
     <>
       <div className="h-150 w-111.25 bg-[rgba(0,0,0,0.05)] rounded-3xl border border-white border-box">
         <img
-          src={props.imgUrl}
+          src={props.item.imgUrl}
           alt="item"
           className="w-full h-3/4 rounded-t-3xl scale-[0.7]"
         ></img>
         <div className="w-full h-1/4 bg-[rgba(0,0,0,0.1)] rounded-b-3xl text-xl text-white pr-8 pl-5 py-3 flex flex-col justify-around">
           <div className="flex justify-around">
             <div className="font-semibold text-[1.65rem] w-3/5">
-              {props.description}
+              {props.item.description}
             </div>
             <div className="font-medium text-[rgba(255,255,255,0.9)]">
-              {props.price}
+              {props.item.price}
             </div>
           </div>
 
           <ThreeDButton
             color={props.buttonBgColor}
-            width="w-45"
+            width="w-50"
             height="h-13"
             cartIconExist
-            text=" Add To Cart"
+            text={` Add To Cart ${props.item.qte > 0 ? `(${props.item.qte})` : ""}`}
             extraFeatures="self-end font-bold mb-1"
             onClick={() => {}}
           />
@@ -103,79 +85,109 @@ function ProductCard(props: productCardProps) {
   );
 }
 
-function Items(items: itemsProps) {
-  const allItemsArray: productCardProps[][] = [
-    [
-      {
-        imgUrl: item,
-        buttonBgColor: items.buttonBgColor,
-        description: "Classic Cookie",
-        price: "7 Dt",
-      },
-      {
-        imgUrl: item2,
-        buttonBgColor: items.buttonBgColor,
-        description: "Pistachio Cookie",
-        price: "7 Dt",
-      },
-      {
-        imgUrl: item3,
-        buttonBgColor: items.buttonBgColor,
-        description: "Red Velvet Cookie",
-        price: "7 Dt",
-      },
-    ],
+const allItemsArray: itemProps[][] = [
+  [
+    {
+      imgUrl: item,
+      description: "Classic Cookie",
+      price: "7 Dt",
+      qte: 0,
+    },
+    {
+      imgUrl: item2,
+      description: "Pistachio Cookie",
+      price: "7 Dt",
+      qte: 0,
+    },
+    {
+      imgUrl: item3,
+      description: "Red Velvet Cookie",
+      price: "7 Dt",
+      qte: 0,
+    },
+    {
+      imgUrl: item8,
+      description: "test testtttt tesst  teeest",
+      price: "7 Dt",
+      qte: 0,
+    },
+    {
+      imgUrl: item9,
+      description: "test testtttt tesst  teeest",
+      price: "7 Dt",
+      qte: 0,
+    },
+  ],
+  [
+    {
+      imgUrl: item5,
+      description: "test testtttt tesst  teeest",
+      price: "7 Dt",
+      qte: 0,
+    },
+    {
+      imgUrl: item6,
+      description: "test testtttt tesst  teeest",
+      price: "7 Dt",
+      qte: 0,
+    },
+  ],
+];
 
+function Items(items: itemsGroupProps) {
+  const productCardsArray: productCardProps[][] = [
     [
       {
-        imgUrl: item8,
+        item: allItemsArray[0][0],
         buttonBgColor: items.buttonBgColor,
-        description: "test testtttt tesst  teeest",
-        price: "7 Dt",
       },
       {
-        imgUrl: item9,
+        item: allItemsArray[0][1],
         buttonBgColor: items.buttonBgColor,
-        description: "test testtttt tesst  teeest",
-        price: "7 Dt",
+      },
+      {
+        item: allItemsArray[0][2],
+        buttonBgColor: items.buttonBgColor,
+      },
+      {
+        item: allItemsArray[0][3],
+        buttonBgColor: items.buttonBgColor,
+      },
+      {
+        item: allItemsArray[0][4],
+        buttonBgColor: items.buttonBgColor,
       },
     ],
     [
       {
-        imgUrl: item5,
+        item: allItemsArray[1][0],
         buttonBgColor: items.buttonBgColor,
-        description: "test testtttt tesst  teeest",
-        price: "7 Dt",
       },
       {
-        imgUrl: item6,
+        item: allItemsArray[1][1],
         buttonBgColor: items.buttonBgColor,
-        description: "test testtttt tesst  teeest",
-        price: "7 Dt",
       },
     ],
   ];
 
   const currentCatItems: productCardProps[] =
-    allItemsArray[items.currentCategory];
+    productCardsArray[items.currentCategory];
 
   return (
     <>
-      <div className="absolute z-1 w-full h-full top-[100vh] flex items-center justify-center overflow-auto">
+      <div className="fixed z-3 w-screen h-screen top-0 flex items-center justify-center overflow-auto delay-1000">
         <div
-          className="absolute right-10 top-10 size-30 rounded-full flex justify-center items-center
+          className="absolute right-10 z-4 top-10 size-30 rounded-full flex justify-center items-center
           text-[rgba(0,0,0,0.5)] hover:bg-[rgba(0,0,0,0.1)] hover:cursor-pointer transition-all ease-in duration-150"
           onClick={items.onClose}
         >
           <X size={50} />
         </div>
-        <div className="h-[80vh] w-350 flex justify-center items-center flex-wrap opacity-100 gap-8 box-content">
+        <div className="absolute top-0 py-25 flex justify-center  flex-wrap gap-8 box-content">
           {currentCatItems.map((product) => (
             <ProductCard
-              imgUrl={product.imgUrl}
+              item={product.item}
               buttonBgColor={product.buttonBgColor}
-              description={product.description}
-              price={product.price}
             />
           ))}
         </div>
@@ -183,15 +195,7 @@ function Items(items: itemsProps) {
     </>
   );
 }
-function Menu() {
-  const [isVisible, setIsVisible] = useState(false);
-  function showItems() {
-    setIsVisible(true);
-  }
-  function hideItems() {
-    setIsVisible(false);
-  }
-
+function Menu({ areItemsVisible, isCartVisible, toggle }: Visibility) {
   const [categoryIndex, setIndex] = useState(Category.Cookies);
   function decrimentIndex() {
     setIndex((prevCategoryIndex) =>
@@ -207,7 +211,7 @@ function Menu() {
       category: Category.Cookies,
       shape: "[clip-path:circle(40%)]",
       imgUrl: cookieimg,
-      bgColor: "bg-amber-100",
+      bgColor: "bg-primary",
       textColor: "text-orange-300",
       label: "Show Cookies",
       buttonBgColor: "bg-orange-300",
@@ -216,7 +220,7 @@ function Menu() {
       category: Category.Brownies,
       shape: "[clip-path:inset(15%_15%_15%_15%)]",
       imgUrl: brownieimg,
-      bgColor: "bg-[#B5816E]",
+      bgColor: "bg-[#b5816e]",
       textColor: "text-[#4D3228]",
       label: "Show Brownies",
       buttonBgColor: "bg-[#4D3228]",
@@ -234,16 +238,18 @@ function Menu() {
 
   return (
     <>
-      {isVisible && (
+      {areItemsVisible && (
         <Items
           currentCategory={categoriesArray[categoryIndex].category}
           buttonBgColor={categoriesArray[categoryIndex].buttonBgColor}
-          onClose={hideItems}
+          onClose={toggle}
         />
       )}
+
       <div
-        className={`min-h-screen
-        ${isVisible ? "blur-3xl " : "blur-0"}
+        className={`min-h-[calc(100vh-80px)]
+        ${areItemsVisible ? "blur-3xl" : "blur-0"}
+        ${isCartVisible ? "blur-md" : "blur-0"}
         ${categoriesArray[categoryIndex].bgColor}
         relative
         bg-center
@@ -252,7 +258,7 @@ function Menu() {
         flex
         items-center
         justify-evenly
-        transition-all duration-200 ease-in
+        transition-all duration-200 ease-in 
       `}
       >
         <div
@@ -273,8 +279,9 @@ function Menu() {
         </div>
 
         <div
-          className="flex flex-col justify-center items-center
-          max-w-1/3
+          className="flex flex-col justify-around items-center
+          w-2/7
+          min-w-120
           h-[85vh]
           mt-20"
         >
@@ -292,7 +299,7 @@ function Menu() {
           <img
             src={categoriesArray[categoryIndex].imgUrl}
             alt="Image"
-            onClick={showItems}
+            onClick={toggle}
             className={`-mt-15
             cursor-pointer
             block
@@ -307,7 +314,8 @@ function Menu() {
             color={categoriesArray[categoryIndex].buttonBgColor}
             height="h-15"
             text={categoriesArray[categoryIndex].label}
-            onClick={showItems}
+            cartIconExist={false}
+            onClick={toggle}
           />
         </div>
         <div

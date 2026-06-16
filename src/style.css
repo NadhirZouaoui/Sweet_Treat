@@ -24,4 +24,7 @@ body {
 }
 @theme {
   --font-comfortaa: Comforta, "sans-serif";
+
+  --color-primary: #fef3c7;
+  --color-secondary: #4d3228;
 }

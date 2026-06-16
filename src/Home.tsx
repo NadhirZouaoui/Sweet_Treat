@@ -1,79 +1,181 @@
-interface ButtonProps {
-  value: string;
-  url: string;
+import { useState, useEffect } from "react";
+import { ShoppingCart, ArrowRight } from "lucide-react";
+
+// ── Reuse the same ThreeDButton from Menu ────────────────────────────────────
+interface buttonProps {
+  color: string;
+  width: string;
+  height: string;
+  text: string;
+  extraFeatures: string;
+  cartIconExist: boolean;
+  onClick: () => void;
+}
+interface Visibility {
+  areItemsVisible: boolean;
+  isCartVisible: boolean;
 }
 
-function Button({ value, url }: ButtonProps) {
+const ThreeDButton = (props: buttonProps) => {
+  const heightNumber: number = parseInt(props.height.replace(/[^\d.]/g, ""));
+  const shadowHeight: number = heightNumber * 0.5;
   return (
-    <a
-      href={url}
-      className="bg-pink-600 rounded-full w-45 h-14 text-white flex items-center justify-center font-semibold text-lg
-      hover:bg-pink-800 hover:-translate-y-1 transition-all duration-300 ease-in-out "
-      style={{
-        animation: "fadeInUp 0.8s ease-out forwards",
-        animationDelay: "600ms",
-        opacity: 0,
-      }}
+    <button
+      onClick={props.onClick}
+      className={`rounded-full ${props.color} ${props.width} ${props.height} flex items-center justify-center border-none
+        hover:border-2 hover:border-black hover:shadow-none! hover:translate-y-2 ease-in transition-all cursor-pointer
+        ${props.extraFeatures}`}
+      style={{ boxShadow: `0px ${shadowHeight}px 0 0 black` }}
     >
-      {value}
-    </a>
+      {props.cartIconExist && (
+        <ShoppingCart size={25} color="white" className="mr-2" />
+      )}
+      {props.text}
+    </button>
   );
-}
-function Home() {
+};
+
+// ── Floating badge chips ─────────────────────────────────────────────────────
+const badges = ["🍪 Cookies", "🍫 Brownies", "🍰 Tiramisu", "🎂 Cakes"];
+
+// ── Main Home ────────────────────────────────────────────────────────────────
+function Home({ areItemsVisible, isCartVisible }: Visibility) {
+  const [loaded, setLoaded] = useState(false);
+  const [activeBadge, setActiveBadge] = useState(0);
+
+  useEffect(() => {
+    // stagger in
+    const t = setTimeout(() => setLoaded(true), 50);
+    // cycle badge highlight
+    const interval = setInterval(() => {
+      setActiveBadge((prev) => (prev + 1) % badges.length);
+    }, 1800);
+    return () => {
+      clearTimeout(t);
+      clearInterval(interval);
+    };
+  }, []);
+
   return (
     <div
-      className="m-0 
-      min-h-screen
-      bg-[linear-gradient(90deg,rgba(255,255,255,0.9)_20%,rgba(255,255,255,0.6)_60%,rgba(255,171,224,0)_100%),url('/src/assets/homeBg.png')] 
-      bg-center 
-      bg-cover"
+      className={`min-h-screen bg-amber-100 relative overflow-hidden ${areItemsVisible ? "blur-3xl" : ""}
+              ${isCartVisible ? "blur-md" : "blur-0"}
+`}
     >
+      {/* ── Background decorative circles (mirror Menu's clip-path shapes) ── */}
       <div
-        className="flex
-          flex-col
-          justify-around
-          min-h-[90vh]
-          ml-44
-          w-xl"
-      >
-        <div></div>
+        className="absolute -top-32 -right-32 w-[500px] h-[500px] rounded-full bg-orange-300/40"
+        style={{ clipPath: "circle(40%)" }}
+      />
+      <div
+        className="absolute bottom-10 -left-24 w-[380px] h-[380px] bg-[#B5816E]/30"
+        style={{ clipPath: "inset(15% 15% 15% 15%)" }}
+      />
+      <div
+        className="absolute top-1/2 left-[55%] w-[200px] h-[200px] bg-orange-200/50 rounded-full"
+        style={{ clipPath: "circle(40%)" }}
+      />
+
+      {/* ── Main layout ─────────────────────────────────────────────────── */}
+      <div className="relative z-1 flex flex-col items-center justify-center min-h-screen px-8 gap-12 pt-24 pb-16">
+        {/* ── Badge strip ─────────────────────────────────────────────── */}
         <div
-          className="text-pink-600 tracking-[5px] font-semibold text-base"
-          style={{ animation: "fadeInUp 0.8s ease-out forwards" }}
-        >
-          HANDCRAFTED WITH LOVE
-        </div>
-        <div className="-mt-10 w-2xl">
-          <p
-            className="font-['Playfair_Display'] md:text-8xl font-bold leading-[1.1] text-foreground text-[]"
-            style={{
-              animation: "fadeInUp 0.8s ease-out forwards",
-              animationDelay: "200ms",
-              opacity: 0,
-            }}
-          >
-            welcome to <br />
-            <span className="italic text-pink-600">SweetTreat </span> our jolly
-            dolly land
-          </p>
-        </div>
-        <div
-          className="font-['Inter'] text-xl opacity-50"
+          className="flex gap-3 flex-wrap justify-center"
           style={{
-            animation: "fadeInUp 0.8s ease-out forwards",
-            animationDelay: "400ms",
-            opacity: 0,
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "translateY(0)" : "translateY(20px)",
+            transition: "opacity 0.7s ease, transform 0.7s ease",
           }}
         >
-          We bake with love, every single day. From brownies cakes to sweet
-          cookies. Order now and get the taste of a real home-made desert, a
-          taste that you will never forget!
+          {badges.map((b, i) => (
+            <span
+              key={b}
+              className={`px-5 py-2 rounded-full font-semibold text-sm border-2 border-black transition-all duration-300
+                ${
+                  activeBadge === i
+                    ? "bg-black text-amber-100 scale-110"
+                    : "bg-white/70 text-black"
+                }`}
+              style={{
+                boxShadow: activeBadge === i ? "0px 4px 0 0 black" : "none",
+              }}
+            >
+              {b}
+            </span>
+          ))}
         </div>
-        <div className="flex justify-around w-3/4">
-          <Button value="best sellers" url="" />
-          <Button value="our story" url="" />
+
+        {/* ── Hero text ────────────────────────────────────────────────── */}
+        <div
+          className="text-center max-w-4xl"
+          style={{
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "translateY(0)" : "translateY(30px)",
+            transition: "opacity 0.8s ease 0.2s, transform 0.8s ease 0.2s",
+          }}
+        >
+          <p className="text-orange-300 tracking-[6px] font-semibold text-sm mb-4 uppercase">
+            Handcrafted with love
+          </p>
+          <h1 className="font-['Playfair_Display'] text-7xl md:text-8xl font-bold leading-[1.1] text-black">
+            Welcome to <br />
+            <span className="italic text-orange-400">SweetTreat</span>
+          </h1>
+          <p className="mt-6 text-black/50 text-xl max-w-xl mx-auto leading-relaxed font-['Inter']">
+            We bake with love, every single day. From brownies to cookies —
+            order now and taste real home-made goodness.
+          </p>
+        </div>
+
+        {/* ── CTA Buttons ──────────────────────────────────────────────── */}
+        <div
+          className="flex gap-6 flex-wrap justify-center"
+          style={{
+            opacity: loaded ? 1 : 0,
+            transform: loaded ? "translateY(0)" : "translateY(30px)",
+            transition: "opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s",
+          }}
+        >
+          <ThreeDButton
+            color="bg-orange-400"
+            width="w-52"
+            height="h-14"
+            text="Best Sellers"
+            extraFeatures="text-white font-bold text-lg"
+            cartIconExist={false}
+            onClick={() => {}}
+          />
+          <ThreeDButton
+            color="bg-[#4D3228]"
+            width="w-52"
+            height="h-14"
+            text="Our Story"
+            extraFeatures="text-white font-bold text-lg"
+            cartIconExist={false}
+            onClick={() => {}}
+          />
+        </div>
+
+        {/* ── Scroll hint ──────────────────────────────────────────────── */}
+        <div
+          className="flex flex-col items-center gap-2 text-black/30 text-sm"
+          style={{
+            opacity: loaded ? 1 : 0,
+            transition: "opacity 1s ease 1s",
+            animation: "bounce 2s infinite 1.5s",
+          }}
+        >
+          <ArrowRight size={20} className="rotate-90" />
+          <span>Scroll to explore</span>
         </div>
       </div>
+
+      <style>{`
+        @keyframes bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(8px); }
+        }
+      `}</style>
     </div>
   );
 }
