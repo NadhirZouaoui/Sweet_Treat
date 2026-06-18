@@ -1,43 +1,19 @@
-import cookieimg from "./assets/cookieCat.png";
-import brownieimg from "./assets/browniesCat.png";
-import tiramisuimg from "./assets/tiramisuCat.png";
-import item from "./assets/cookie_items/item.png";
-import item2 from "./assets/cookie_items/item2.png";
-import item3 from "./assets/cookie_items/item3.png";
-
-import item5 from "./assets/cookie_items/item5.png";
-import item6 from "./assets/cookie_items/item6.png";
-
-import item8 from "./assets/cookie_items/item8.png";
-import item9 from "./assets/cookie_items/item9.png";
 import { useState } from "react";
 import { X } from "lucide-react";
 import ThreeDButton from "./ThreeDButton";
+import {
+  allItemsArray,
+  categoriesArray,
+  Category,
+  type itemProps,
+  useCounterStore,
+} from "./store.ts";
 
-enum Category {
-  Cookies,
-  Brownies,
-  Tiramisu,
-}
 interface Visibility {
   areItemsVisible: boolean;
   isCartVisible: boolean;
-  toggle: () => void;
-}
-interface catProps {
-  category: Category;
-  shape: string;
-  bgColor: string;
-  imgUrl: string;
-  textColor: string;
-  buttonBgColor: string;
-  label: string;
-}
-interface itemProps {
-  imgUrl: string;
-  description: string;
-  price: string;
-  qte: number;
+  toggleItems: () => void;
+  toggleCart: () => void;
 }
 
 interface productCardProps {
@@ -49,9 +25,12 @@ interface itemsGroupProps {
   currentCategory: Category;
   buttonBgColor: string;
   onClose: () => void;
+  toggleCart: () => void;
 }
 
 function ProductCard(props: productCardProps) {
+  const currentItemsQte = useCounterStore((state) => state.qteItems);
+  const addToCart = useCounterStore((state) => state.addToCart);
   return (
     <>
       <div className="h-150 w-111.25 bg-[rgba(0,0,0,0.05)] rounded-3xl border border-white border-box">
@@ -75,9 +54,9 @@ function ProductCard(props: productCardProps) {
             width="w-50"
             height="h-13"
             cartIconExist
-            text={` Add To Cart ${props.item.qte > 0 ? `(${props.item.qte})` : ""}`}
+            text={` Add To Cart ${currentItemsQte[props.item.id] > 0 ? `(${currentItemsQte[props.item.id]})` : ""}`}
             extraFeatures="self-end font-bold mb-1"
-            onClick={() => {}}
+            onClick={() => addToCart(props.item.id)}
           />
         </div>
       </div>
@@ -85,93 +64,23 @@ function ProductCard(props: productCardProps) {
   );
 }
 
-const allItemsArray: itemProps[][] = [
-  [
-    {
-      imgUrl: item,
-      description: "Classic Cookie",
-      price: "7 Dt",
-      qte: 0,
-    },
-    {
-      imgUrl: item2,
-      description: "Pistachio Cookie",
-      price: "7 Dt",
-      qte: 0,
-    },
-    {
-      imgUrl: item3,
-      description: "Red Velvet Cookie",
-      price: "7 Dt",
-      qte: 0,
-    },
-    {
-      imgUrl: item8,
-      description: "test testtttt tesst  teeest",
-      price: "7 Dt",
-      qte: 0,
-    },
-    {
-      imgUrl: item9,
-      description: "test testtttt tesst  teeest",
-      price: "7 Dt",
-      qte: 0,
-    },
-  ],
-  [
-    {
-      imgUrl: item5,
-      description: "test testtttt tesst  teeest",
-      price: "7 Dt",
-      qte: 0,
-    },
-    {
-      imgUrl: item6,
-      description: "test testtttt tesst  teeest",
-      price: "7 Dt",
-      qte: 0,
-    },
-  ],
-];
-
 function Items(items: itemsGroupProps) {
-  const productCardsArray: productCardProps[][] = [
-    [
-      {
-        item: allItemsArray[0][0],
+  const productCardsArray: productCardProps[][] = [];
+  for (let i = 0; i < allItemsArray.length; i++) {
+    const itemsPerCategory: productCardProps[] = [];
+    for (let j = 0; j < allItemsArray[i].length; j++) {
+      const productCard: productCardProps = {
+        item: allItemsArray[i][j],
         buttonBgColor: items.buttonBgColor,
-      },
-      {
-        item: allItemsArray[0][1],
-        buttonBgColor: items.buttonBgColor,
-      },
-      {
-        item: allItemsArray[0][2],
-        buttonBgColor: items.buttonBgColor,
-      },
-      {
-        item: allItemsArray[0][3],
-        buttonBgColor: items.buttonBgColor,
-      },
-      {
-        item: allItemsArray[0][4],
-        buttonBgColor: items.buttonBgColor,
-      },
-    ],
-    [
-      {
-        item: allItemsArray[1][0],
-        buttonBgColor: items.buttonBgColor,
-      },
-      {
-        item: allItemsArray[1][1],
-        buttonBgColor: items.buttonBgColor,
-      },
-    ],
-  ];
+      };
+      itemsPerCategory.push(productCard);
+    }
+    productCardsArray.push(itemsPerCategory);
+  }
 
   const currentCatItems: productCardProps[] =
     productCardsArray[items.currentCategory];
+  const itemsAddedCount = useCounterStore((state) => state.totalItemsAdded);
 
   return (
     <>
@@ -183,7 +92,7 @@ function Items(items: itemsGroupProps) {
         >
           <X size={50} />
         </div>
-        <div className="absolute top-0 py-25 flex justify-center  flex-wrap gap-8 box-content">
+        <div className="absolute top-0 max-w-350 py-25 flex justify-center  flex-wrap gap-8 box-content">
           {currentCatItems.map((product) => (
             <ProductCard
               item={product.item}
@@ -191,11 +100,28 @@ function Items(items: itemsGroupProps) {
             />
           ))}
         </div>
+        <ThreeDButton
+          color="bg-secondary"
+          width="w-230.5"
+          height="h-16"
+          text="Check Your Cart"
+          extraFeatures={`text-white text-3xl font-bold z-4 fixed -bottom-50 transition-all ease-out duration-500 ${itemsAddedCount > 0 ? "bottom-8" : ""}`}
+          cartIconExist={false}
+          onClick={() => {
+            items.toggleCart();
+            items.onClose();
+          }}
+        />
       </div>
     </>
   );
 }
-function Menu({ areItemsVisible, isCartVisible, toggle }: Visibility) {
+function Menu({
+  areItemsVisible,
+  isCartVisible,
+  toggleItems,
+  toggleCart,
+}: Visibility) {
   const [categoryIndex, setIndex] = useState(Category.Cookies);
   function decrimentIndex() {
     setIndex((prevCategoryIndex) =>
@@ -206,43 +132,14 @@ function Menu({ areItemsVisible, isCartVisible, toggle }: Visibility) {
     setIndex((prevCategoryIndex) => (prevCategoryIndex + 1) % 3);
   }
 
-  const categoriesArray: catProps[] = [
-    {
-      category: Category.Cookies,
-      shape: "[clip-path:circle(40%)]",
-      imgUrl: cookieimg,
-      bgColor: "bg-primary",
-      textColor: "text-orange-300",
-      label: "Show Cookies",
-      buttonBgColor: "bg-orange-300",
-    },
-    {
-      category: Category.Brownies,
-      shape: "[clip-path:inset(15%_15%_15%_15%)]",
-      imgUrl: brownieimg,
-      bgColor: "bg-[#b5816e]",
-      textColor: "text-[#4D3228]",
-      label: "Show Brownies",
-      buttonBgColor: "bg-[#4D3228]",
-    },
-    {
-      category: Category.Tiramisu,
-      shape: "[clip-path:inset(15%_15%_20%_15%)]",
-      imgUrl: tiramisuimg,
-      bgColor: "bg-orange-300",
-      textColor: "text-orange-900",
-      label: "Show Tiramisus",
-      buttonBgColor: "bg-orange-900",
-    },
-  ];
-
   return (
     <>
       {areItemsVisible && (
         <Items
           currentCategory={categoriesArray[categoryIndex].category}
           buttonBgColor={categoriesArray[categoryIndex].buttonBgColor}
-          onClose={toggle}
+          onClose={toggleItems}
+          toggleCart={toggleCart}
         />
       )}
 
@@ -299,7 +196,7 @@ function Menu({ areItemsVisible, isCartVisible, toggle }: Visibility) {
           <img
             src={categoriesArray[categoryIndex].imgUrl}
             alt="Image"
-            onClick={toggle}
+            onClick={toggleItems}
             className={`-mt-15
             cursor-pointer
             block
@@ -315,7 +212,7 @@ function Menu({ areItemsVisible, isCartVisible, toggle }: Visibility) {
             height="h-15"
             text={categoriesArray[categoryIndex].label}
             cartIconExist={false}
-            onClick={toggle}
+            onClick={toggleItems}
           />
         </div>
         <div

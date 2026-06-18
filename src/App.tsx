@@ -19,7 +19,7 @@ function App() {
         </section>
       )}
 
-      <Cart isCartVisible={isCartVisible} />
+      <Cart isCartVisible={isCartVisible} toggleCart={changeCartVisibility} />
       <section id="home">
         <Home areItemsVisible={areItemsVisible} isCartVisible={isCartVisible} />
       </section>
@@ -27,7 +27,8 @@ function App() {
         <Menu
           areItemsVisible={areItemsVisible}
           isCartVisible={isCartVisible}
-          toggle={changeItemsVisibility}
+          toggleItems={changeItemsVisibility}
+          toggleCart={changeCartVisibility}
         />
       </section>
       {/* <section id="about"> */}

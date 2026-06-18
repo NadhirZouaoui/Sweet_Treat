@@ -7,7 +7,7 @@ interface visibilityProps {
 function navBar({ toggleCart }: visibilityProps) {
   return (
     <div
-      className="flex fixed z-2 w-full border-b border-[rgba(255,255,255,0.3)]
+      className="flex fixed z-10 w-full border-b border-gray-300
       bg-primary 
       justify-between
       h-20"
