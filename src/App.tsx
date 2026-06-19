@@ -3,6 +3,7 @@ import Navbar from "./navBar.tsx";
 import Home from "./Home";
 import Menu from "./Menu";
 import Cart from "./Cart.tsx";
+import { DeliveryMethods } from "./DeliveryMethods.tsx";
 //import About from "./About";
 //import Contact from "./Contact";
 function App() {
@@ -31,6 +32,7 @@ function App() {
           toggleCart={changeCartVisibility}
         />
       </section>
+      <DeliveryMethods />
       {/* <section id="about"> */}
       {/*   <About /> */}
       {/* </section> */}
