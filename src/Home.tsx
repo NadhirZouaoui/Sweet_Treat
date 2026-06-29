@@ -58,7 +58,7 @@ function Home({ areItemsVisible, isCartVisible }: Visibility) {
 
   return (
     <div
-      className={`min-h-screen bg-amber-100 relative overflow-hidden ${areItemsVisible ? "blur-3xl" : ""}
+      className={`min-h-screen bg-amber-50 relative overflow-hidden ${areItemsVisible ? "blur-3xl" : ""}
               ${isCartVisible ? "blur-md" : "blur-0"}
 `}
     >
@@ -94,7 +94,7 @@ function Home({ areItemsVisible, isCartVisible }: Visibility) {
                 ${
                   activeBadge === i
                     ? "bg-black text-amber-100 scale-110"
-                    : "bg-white/70 text-black"
+                    : "bg-white/70 text-white"
                 }`}
               style={{
                 boxShadow: activeBadge === i ? "0px 4px 0 0 black" : "none",
@@ -117,7 +117,7 @@ function Home({ areItemsVisible, isCartVisible }: Visibility) {
           <p className="text-orange-300 tracking-[6px] font-semibold text-sm mb-4 uppercase">
             Handcrafted with love
           </p>
-          <h1 className="font-['Playfair_Display'] text-7xl md:text-8xl font-bold leading-[1.1] text-black">
+          <h1 className="font-['Playfair_Display'] text-7xl md:text-8xl font-bold leading-[1.1] ">
             Welcome to <br />
             <span className="italic text-orange-400">SweetTreat</span>
           </h1>
@@ -137,7 +137,7 @@ function Home({ areItemsVisible, isCartVisible }: Visibility) {
           }}
         >
           <ThreeDButton
-            color="bg-orange-400"
+            color="bg-orange-300"
             width="w-52"
             height="h-14"
             text="Best Sellers"
@@ -158,7 +158,7 @@ function Home({ areItemsVisible, isCartVisible }: Visibility) {
 
         {/* ── Scroll hint ──────────────────────────────────────────────── */}
         <div
-          className="flex flex-col items-center gap-2 text-black/30 text-sm"
+          className="flex flex-col items-center gap-2 text-white/30 text-sm"
           style={{
             opacity: loaded ? 1 : 0,
             transition: "opacity 1s ease 1s",

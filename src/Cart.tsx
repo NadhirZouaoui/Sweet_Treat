@@ -4,6 +4,7 @@ import ThreeDButton from "./ThreeDButton.tsx";
 interface cartVisibility {
   isCartVisible: boolean;
   toggleCart: () => void;
+  toggleOrderMethods: () => void;
 }
 interface ItemInCartProps extends itemProps {
   qte: number;
@@ -49,12 +50,16 @@ const parsePrice = (price: string): number => {
   return isNaN(num) ? 0 : num;
 };
 
-const Cart = ({ isCartVisible, toggleCart }: cartVisibility) => {
+const Cart = ({
+  isCartVisible,
+  toggleCart,
+  toggleOrderMethods,
+}: cartVisibility) => {
   const currentItemsQte = useCounterStore((state) => state.qteItems);
   const addToCart = useCounterStore((state) => state.addToCart);
   const removeFromCart = useCounterStore((state) => state.removeFromCart);
   const cartItemsCount = useCounterStore((state) => state.totalItemsAdded);
-
+  const cartIsEmpty = cartItemsCount == 0;
   let totalPrice = 0;
   allItemsArray.forEach((itemsPerCat) =>
     itemsPerCat.forEach((item) => {
@@ -69,7 +74,7 @@ const Cart = ({ isCartVisible, toggleCart }: cartVisibility) => {
                     w-[30vw] h-[calc(100vh-80px)] transition-all ease-out duration-500 bg-primary text-gray-800 flex flex-col font-semibold p-6`}
       >
         <h2 className="text-3xl font-bold mb-6 text-center border-b pb-4 border-gray-300">
-          {cartItemsCount == 0 ? `Your Cart is empty` : "Your Cart Items"}{" "}
+          {cartIsEmpty ? `Your Cart is empty` : "Your Cart Items"}{" "}
         </h2>
 
         <div className="flex-1 overflow-auto pr-1 flex flex-col gap-4 ">
@@ -95,13 +100,16 @@ const Cart = ({ isCartVisible, toggleCart }: cartVisibility) => {
           <span className="text-xl font-bold">{totalPrice} Dt</span>
         </div>
         <ThreeDButton
-          color="bg-orange-300"
+          color={cartIsEmpty ? "bg-orange-300/20" : "bg-orange-300"}
           width="w-full"
           height="h-14"
           text="Finish Check Out →"
           extraFeatures="text-white text-3xl font-bold"
           cartIconExist={false}
-          onClick={() => {}}
+          onClick={() => {
+            toggleCart();
+            toggleOrderMethods();
+          }}
         />
       </div>
 

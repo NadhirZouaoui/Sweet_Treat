@@ -54,8 +54,7 @@ export const allItemsArray: itemProps[][] = [
       description: "Red Velvet Cookie",
       price: "7 Dt",
     },
-  ],
-  [
+
     {
       id: 3,
       imgUrl: item8,
